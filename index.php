@@ -1,10 +1,14 @@
 <?php
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 class VendorMachine
 {
     private bool $isOn;
     private int $snacksQty;
-    private float $money;
+    private int $money;
 
     public function __construct()
     {
