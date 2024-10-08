@@ -11,6 +11,18 @@
 <?php
 
 class Order {
+    public static $CART_STATUS = "CART";
+    public static $SHIPPING_ADRESS_SET_STATUS = "SHIPPING_ADRESS_SET";
+    public static $SHIPPING_METHOD_SET_STATUS = "SHIPPING_METHOD_SET";
+    public static $PAID_STATUS = "PAID";
+    public static $MAX_PRODUCTS_BY_ORDER = 5;
+	public static $BLACKLISTED_CUSTOMERS = ['David Robert'];
+	public static $UNIQUE_PRODUCT_PRICE = 5;
+	public static $AUTORIZED_SHIPPING_COUNTRIES = ['France', 'Belgique', 'Luxembourg'];
+	public static $AVAILABLE_SHIPPING_METHODS = ['Chronopost Express', 'Point relais', 'Domicile'];
+	public static $PAID_SHIPPING_METHOD = 'Chronopost Express';
+	public static $PAID_SHIPPING_METHODS_COST = 5;
+
     private array $products;
     private string $customerName;
     private float $totalPrice;
@@ -23,20 +35,20 @@ class Order {
     private ?string $shippingCountry = null;
 
     public function __construct(string $customerName, array $products) {
-        if (count($products) > 5) {
-            throw new Exception('Vous ne pouvez pas commander plus de 5 produits');
+        if (count($products) >  Order::$MAX_PRODUCTS_BY_ORDER) {
+            throw new Exception("Vous ne pouvez pas commander plus de " . Order::$MAX_PRODUCTS_BY_ORDER . " produits");
         }
 
-        if ($customerName === "David Robert") {
+        if ($customerName === Order::$BLACKLISTED_CUSTOMERS) {
             throw new Exception('Vous êtes blacklisté');
         }
 
-        $this->status = "CART";
+        $this->status = Order::$CART_STATUS;
         $this->createdAt = new DateTime();
         $this->id = rand();
         $this->products = $products;
         $this->customerName = $customerName;
-        $this->totalPrice = count($products) * 5;
+        $this->totalPrice = count($products) * Order::$UNIQUE_PRODUCT_PRICE;
 
         $this->display("Commande {$this->id} créée, d'un montant de {$this->totalPrice} !", 'info');
     }
@@ -54,7 +66,7 @@ class Order {
     }
 
     public function addProduct(string $product): void {
-        if ($this->status !== "CART") {
+        if ($this->status !== Order::$CART_STATUS) {
             $this->display("Vous ne pouvez pas ajouter de produit car la commande n'est pas en statut 'CART'.", 'error');
             return;
         }
@@ -64,13 +76,13 @@ class Order {
             return;
         }
 
-        if (count($this->products) >= 5) {
-            $this->display("Vous ne pouvez pas ajouter plus de 5 produits.", 'error');
+        if (count($this->products) >= Order::$MAX_PRODUCTS_BY_ORDER) {
+            $this->display("Vous ne pouvez pas ajouter plus de " . Order::$MAX_PRODUCTS_BY_ORDER . " produits.", 'error');
             return;
         }
 
         $this->products[] = $product;
-        $this->totalPrice = count($this->products) * 5;
+        $this->totalPrice = count($this->products) * Order::$UNIQUE_PRODUCT_PRICE;
 
         $this->display("Le produit '$product' a été ajouté à la commande.", 'success');
     }
@@ -81,7 +93,7 @@ class Order {
         if ($key !== false) {
             unset($this->products[$key]);
             $this->products = array_values($this->products);
-            $this->totalPrice = count($this->products) * 5;
+            $this->totalPrice = count($this->products) * Order::$UNIQUE_PRODUCT_PRICE;
 
             $this->display("Le produit '$product' a été supprimé de la commande.", 'success');
         } else {
@@ -92,7 +104,7 @@ class Order {
     public function setShippingCountry(string $shippingCountry): void {
         $this->shippingCountry = $shippingCountry;
 
-        if (!in_array($this->shippingCountry, ['France', 'Belgique', 'Luxembourg'])) {
+        if (!in_array($this->shippingCountry, Order::$AUTORIZED_SHIPPING_COUNTRIES)) {
             throw new Exception('La livraison n\'est possible qu\'en France, Belgique ou Luxembourg.');
         }
 
@@ -100,44 +112,44 @@ class Order {
     }
 
     public function setShippingAddress(string $address): void {
-        if ($this->status !== "CART") {
+        if ($this->status !== Order::$CART_STATUS) {
             throw new Exception('Vous ne pouvez pas définir l\'adresse de livraison car la commande n\'est pas en statut "CART".');
         }
     
         $this->shippingAddress = $address;
-        $this->status = 'SHIPPING_ADDRESS_SET';
+        $this->status = Order::$SHIPPING_ADRESS_SET_STATUS;
         $this->display("Adresse de livraison définie : {$address}.", 'info');
     }
 
     public function setShippingMethod(string $shippingMethod): void {
-        if ($this->status !== "SHIPPING_ADDRESS_SET") {
+        if ($this->status !== Order::$SHIPPING_ADRESS_SET_STATUS) {
             throw new Exception('Vous ne pouvez pas définir la méthode de livraison avant d\'avoir renseigné l\'adresse.');
         }
     
-        $validMethods = ['chronopost Express', 'point relais', 'domicile'];
+        $validMethods = Order::$AVAILABLE_SHIPPING_METHODS;
         if (!in_array($shippingMethod, $validMethods)) {
             throw new Exception('La méthode de livraison doit être "chronopost Express", "point relais" ou "domicile".');
         }
     
         $this->shippingMethod = $shippingMethod;
-        $this->status = 'SHIPPING_METHOD_SET';
+        $this->status = Order::$SHIPPING_METHOD_SET_STATUS;
     
-        if ($shippingMethod === 'chronopost Express') {
-            $this->totalPrice += 5; 
+        if ($shippingMethod === Order::$PAID_SHIPPING_METHOD) {
+            $this->totalPrice + Order::$PAID_SHIPPING_METHODS_COST; 
         }
     
         $this->display("Méthode de livraison sélectionnée : {$shippingMethod}.", 'info');
     }
 
     public function pay(): void {
-        if (empty($this->shippingMethod)) {
-            throw new Exception('Vous ne pouvez pas payer la commande sans avoir sélectionné une méthode de livraison.');
-        }
+        if ($this->status !== Order::$SHIPPING_METHOD_SET_STATUS) {
+			throw new Exception(message: 'Vous ne pouvez pas payer avant d\'avoir renseigné la méthode de livraison');
+		}
         if ($this->shippingMethod === 'chronopost Express') {
             $this->display("Vous avez choisi chronopost Express pour 5€ en plus, votre commande vous revient donc à {$this->totalPrice}€", 'info');
         }
         
-        $this->status = 'PAID';
+        $this->status = Order::$PAID_STATUS;
         $this->display("La commande a été payée avec succès.", 'success');
     }
 
