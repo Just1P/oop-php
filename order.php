@@ -155,7 +155,6 @@ class Order {
 try {
     $order = new Order('Justin', ['feuille', 'stylo', 'trousse']);
     $order->addProduct('cahier');
-    $order->addProduct('ak-47');
     $order->setShippingCountry('France');
     $order->setShippingAddress('123 rue de Paris, Paris');
     $order->setShippingMethod('Chronopost Express');
