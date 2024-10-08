@@ -53,14 +53,14 @@ class Order {
         echo "<div style='color: $color; background-color: #f0f0f0; padding: 10px; margin-bottom: 5px; border-radius: 5px;'>$message</div>";
     }
 
-    public function addProduct(string $productName): void {
+    public function addProduct(string $product): void {
         if ($this->status !== "CART") {
             $this->display("Vous ne pouvez pas ajouter de produit car la commande n'est pas en statut 'CART'.", 'error');
             return;
         }
 
-        if (in_array($productName, $this->products)) {
-            $this->display("Le produit '$productName' est déjà dans la commande.", 'warning');
+        if (in_array($product, $this->products)) {
+            $this->display("Le produit '$product' est déjà dans la commande.", 'warning');
             return;
         }
 
@@ -69,23 +69,23 @@ class Order {
             return;
         }
 
-        $this->products[] = $productName;
+        $this->products[] = $product;
         $this->totalPrice = count($this->products) * 5;
 
-        $this->display("Le produit '$productName' a été ajouté à la commande.", 'success');
+        $this->display("Le produit '$product' a été ajouté à la commande.", 'success');
     }
 
-    public function removeProduct(string $productName): void {
-        $key = array_search($productName, $this->products);
+    public function removeProduct(string $product): void {
+        $key = array_search($product, $this->products);
 
         if ($key !== false) {
             unset($this->products[$key]);
             $this->products = array_values($this->products);
             $this->totalPrice = count($this->products) * 5;
 
-            $this->display("Le produit '$productName' a été supprimé de la commande.", 'success');
+            $this->display("Le produit '$product' a été supprimé de la commande.", 'success');
         } else {
-            $this->display("Le produit '$productName' n'existe pas dans la commande.", 'warning');
+            $this->display("Le produit '$product' n'existe pas dans la commande.", 'warning');
         }
     }
 
