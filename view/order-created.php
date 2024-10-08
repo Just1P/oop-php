@@ -11,6 +11,9 @@
 	
 	<main>
 		<p>La commande a été créée avec succès</p>
+        <a href="../view/shipping-form.php">
+            <button type="button">Définir l'adresse de livraison</button>
+        </a>
 	</main>
 
 	</body>
