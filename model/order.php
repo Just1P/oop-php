@@ -42,7 +42,7 @@ class Order {
         $this->customerName = $customerName;
         $this->updateTotalPrice();
 
-        $this->addMessage("Commande {$this->id} créée avec succès.", self::MESSAGE_SUCCESS);
+        echo "Commande {$this->id} créée, d'un montant de {$this->totalPrice} !</br></br>";
     }
 
     private function validateCustomer(string $customerName): void {
@@ -151,24 +151,3 @@ class Order {
         ];
     }
 }
-
-try {
-    $order = new Order('Justin', ['feuille', 'stylo', 'trousse']);
-    $order->addProduct('cahier');
-    $order->setShippingCountry('France');
-    $order->setShippingAddress('123 rue de Paris, Paris');
-    $order->setShippingMethod('Chronopost Express');
-    $order->pay();
-
-    foreach ($order->getMessages() as $msg) {
-        echo "<div style='color: {$msg['type']}'>{$msg['message']}</div>";
-    }
-
-    foreach ($order->getDetails() as $key => $value) {
-        echo "<div><strong>$key</strong>: " . (is_array($value) ? implode(', ', $value) : $value) . "</div>";
-    }
-
-} catch (Exception $e) {
-    echo "<div style='color: red;'>{$e->getMessage()}</div>";
-}
-
