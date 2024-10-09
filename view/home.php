@@ -14,8 +14,7 @@
 	
 	<form method="POST" action="../controller/create-order.php">
     <label for="customerName">Nom du client :</label>
-    <input type="text" id="customerName" name="customerName" required minlength="2" maxlength="100" 
-           pattern="\S.{1,98}\S" 
+    <input type="text" id="customerName" name="customerName" required
            title="Le nom du client doit contenir entre 2 et 100 caractères et ne doit pas être uniquement composé d'espaces." 
            placeholder="Entrez votre nom complet">
     

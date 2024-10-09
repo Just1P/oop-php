@@ -1,4 +1,3 @@
-
 <?php
 
 require_once '../model/Order.php';
@@ -7,16 +6,27 @@ session_start();
 
 try {
 
-	$customerName = $_POST['customerName'];
-	$products = $_POST['products'];
+    if (!isset($_POST['customerName']) || !isset($_POST['products'])) {
+        $errorMessage = "Merci de remplir les champs. J'ai pas fait tout ça pour rien.";
+        require_once '../view/order-error.php';
+        return;
+    }
 
-	$order = new Order($customerName, $products);
+    $customerName = $_POST['customerName'];
+    $products = $_POST['products'];
 
-	$_SESSION['order'] = $order;
+    $order = new Order($customerName, $products);
 
-	require_once '../view/order-created.php';
+    persistOrder($order);
+
+
+    require_once '../view/order-created.php';
 
 } catch (Exception $e) {
+    $errorMessage = $e->getMessage();
+    require_once '../view/order-error.php';
+}
 
-	require_once '../view/order-error.php';
+function persistOrder(Order $order) {
+    $_SESSION['order'] = $order;
 }
