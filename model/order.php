@@ -45,6 +45,11 @@ class Order {
         echo "Commande {$this->id} créée, d'un montant de {$this->totalPrice} €!</br></br>";
     }
 
+    private function isValidString(string $str): bool {
+        $str = trim($str); // Supprime les espaces avant et après
+        return strlen($str) >= 2 && strlen($str) <= 100 && !empty($str);
+    }
+
     private function validateCustomer(string $customerName): void {
         if (in_array($customerName, self::$BLACKLISTED_CUSTOMERS)) {
             throw new Exception('Vous êtes blacklisté');
@@ -52,11 +57,6 @@ class Order {
         if (!$this->isValidString($customerName)) {
             throw new Exception('Le nom du client doit contenir entre 2 et 100 caractères.');
         }
-    }
-
-    private function isValidString(string $str): bool {
-        $str = trim($str); // Supprime les espaces avant et après
-        return strlen($str) >= 2 && strlen($str) <= 100 && !empty($str);
     }
 
     private function validateProductCount(array $products): void {
