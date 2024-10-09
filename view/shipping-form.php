@@ -13,7 +13,7 @@
     <main>
         <form action="../controller/set-shipping-address.php" method="POST">
             <label for="address">Adresse de livraison :</label>
-            <input type="text" id="address" name="address" required>
+            <input type="text" id="address" name="address" required minlength="2" maxlength="100" pattern="\S.{1,98}\S" placeholder="Entrez votre adresse">
             
             <label for="country">Pays de livraison :</label>
             <select id="country" name="country" required>
@@ -31,6 +31,7 @@
             
             <button type="submit">Définir l'adresse et la méthode</button>
         </form>
+
     </main>
 </body>
 </html>

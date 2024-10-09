@@ -12,27 +12,23 @@
 	
 	<main>
 	
-		<form method="POST" action="../controller/create-order.php">
+	<form method="POST" action="../controller/create-order.php">
+    <label for="customerName">Nom du client :</label>
+    <input type="text" id="customerName" name="customerName" required minlength="2" maxlength="100" pattern="\S.{1,98}\S" placeholder="Entrez votre nom complet">
+    
+    <label for="product">Sélectionnez les produits :</label>
+    <select id="product" name="products[]" multiple required>
+        <option value="tshirt">T-shirt</option>
+        <option value="jeans">Jeans</option>
+        <option value="shoes">Chaussures</option>
+        <option value="short">Short</option>
+        <option value="cap">Casquette</option>
+        <option value="pull">Pull</option>
+    </select>
+    
+    <button type="submit">Créer la commande</button>
+</form>
 
-			<label for="customerName">Nom du client</label>
-			<input type="text" id="customerName" name="customerName" required>
-			<br>
-
-			<label for="product">Produit</label>
-
-			<select id="product" name="products[]" multiple>
-				<option value="tshirt">T-shirt</option>
-				<option value="jeans">Jeans</option>
-				<option value="shoes">Chaussures</option>
-				<option value="short">Short</option>
-				<option value="cap">Casquette</option>
-				<option value="pull">Pull</option>
-			</select>
-			<br>
-
-			<button type="submit">Ajouter</button>
-
-		</form>
 
 	</main>
 

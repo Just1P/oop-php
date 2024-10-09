@@ -49,6 +49,14 @@ class Order {
         if (in_array($customerName, self::$BLACKLISTED_CUSTOMERS)) {
             throw new Exception('Vous êtes blacklisté');
         }
+        if (!$this->isValidString($customerName)) {
+            throw new Exception('Le nom du client doit contenir entre 2 et 100 caractères.');
+        }
+    }
+
+    private function isValidString(string $str): bool {
+        $str = trim($str); // Supprime les espaces avant et après
+        return strlen($str) >= 2 && strlen($str) <= 100 && !empty($str);
     }
 
     private function validateProductCount(array $products): void {
@@ -105,6 +113,9 @@ class Order {
 
     public function setShippingAddress(string $address): void {
         $this->checkStatus(self::STATUS_CART, 'Définir l\'adresse');
+        if (!$this->isValidString($address)) {
+            throw new Exception('L\'adresse de livraison doit contenir entre 2 et 100 caractères.');
+        }
         $this->shippingAddress = $address;
         $this->status = self::STATUS_SHIPPING_ADDRESS_SET;
         $this->addMessage("Adresse de livraison définie : {$address}.", self::MESSAGE_INFO);
