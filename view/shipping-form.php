@@ -14,7 +14,8 @@
     <form action="../controller/set-shipping-address.php" method="POST">
     <label for="address">Adresse de livraison :</label>
     <input type="text" id="address" name="address" required minlength="2" maxlength="100" 
-           pattern="\S.{1,98}\S" 
+    pattern="^[a-zA-ZÀ-ÿ\s'-]{1,100}$"
+
            title="L'adresse de livraison doit contenir entre 2 et 100 caractères et ne doit pas être uniquement composée d'espaces." 
            placeholder="Entrez votre adresse">
     
