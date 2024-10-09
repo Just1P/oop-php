@@ -9,22 +9,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $shippingMethod = $_POST['shippingMethod'] ?? '';
 
     try {
-        // Récupérer l'instance de la commande à partir de la session
         if (isset($_SESSION['order'])) {
             $order = $_SESSION['order'];
         } else {
             throw new Exception("Aucune commande trouvée dans la session.");
         }
 
-        // Définir l'adresse de livraison, le pays et la méthode de livraison
         $order->setShippingAddress($address);
         $order->setShippingCountry($country);
         $order->setShippingMethod($shippingMethod);
 
-        // Mettre à jour la commande dans la session
         $_SESSION['order'] = $order;
 
-        echo "Adresse et méthode de livraison définies avec succès : $address, $country, $shippingMethod";
+        $details = $order->getDetails();
+        $products = implode(', ', $details['products']);
+        $totalPrice = $details['total'];
+
+        echo "<h2>Détails de la commande</h2>";
+        echo "<p>Nom du client : {$details['customer']}</p>";
+        echo "<p>Produits : {$products}</p>";
+        echo "<p>Adresse de livraison : {$address}</p>";
+        echo "<p>Pays de livraison : {$country}</p>";
+        echo "<p>Méthode de livraison : {$shippingMethod}</p>";
+        echo "<p>Montant total : {$totalPrice}€</p>";
+
     } catch (Exception $e) {
         echo "Erreur : " . $e->getMessage();
     }

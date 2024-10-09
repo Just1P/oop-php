@@ -42,7 +42,7 @@ class Order {
         $this->customerName = $customerName;
         $this->updateTotalPrice();
 
-        echo "Commande {$this->id} créée, d'un montant de {$this->totalPrice} !</br></br>";
+        echo "Commande {$this->id} créée, d'un montant de {$this->totalPrice} €!</br></br>";
     }
 
     private function validateCustomer(string $customerName): void {
