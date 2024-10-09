@@ -46,7 +46,7 @@ class Order {
     }
 
     private function isValidString(string $str): bool {
-        $str = trim($str); // Supprime les espaces avant et après
+        $str = trim($str);
         return strlen($str) >= 2 && strlen($str) <= 100 && !empty($str);
     }
 
